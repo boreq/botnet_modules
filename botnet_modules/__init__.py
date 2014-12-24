@@ -1,13 +1,13 @@
-import requests
+import datetime
 import hashlib
-import datetime 
+import requests
 
 
 _uagent = 'Mozilla/5.0 (X11; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0'
 
 
 def get_url(*args, **kwargs):
-    method = kwargs.pop(method, None)
+    method = kwargs.pop('method', None)
     if method is None:
         method = 'get'
     method = method.upper()
@@ -35,7 +35,7 @@ class MemoryCache(object):
 
     def _prepare_key(self, key):
         return get_md5(key)
-    
+
     def _clean(self):
         for key in self._data.copy().keys():
             try:
