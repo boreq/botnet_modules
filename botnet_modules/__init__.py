@@ -19,7 +19,7 @@ def get_url(*args, **kwargs):
     return requests.request(method, *args, **kwargs)
 
 
-def _get_md5(string):
+def get_md5(string):
     """Returns a hash of a string."""
     m = hashlib.md5()
     m.update(string.encode('utf-8'))
