@@ -4,7 +4,7 @@ from .helpers import get_md5
 
 class MemoryCache(object):
     """Simple cache. 100% thread unsafety guaranteed.
-    
+
     default_timeout: timeout used by the set method [seconds].
     """
 

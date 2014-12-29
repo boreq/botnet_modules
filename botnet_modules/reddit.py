@@ -4,7 +4,7 @@ from .lib.cache import MemoryCache
 from .lib.helpers import get_url
 
 
-_subreddit_hot_url = 'https://www.reddit.com/r/%s/hot.json' 
+_subreddit_hot_url = 'https://www.reddit.com/r/%s/hot.json'
 
 
 def get_subreddit_listing(name):
