@@ -1,10 +1,14 @@
 import random
 from botnet.modules import BaseResponder
-from . import MemoryCache, get_url
+from .lib.cache import MemoryCache
+from .lib.helpers import get_url
+
+
+_subreddit_hot_url = 'https://www.reddit.com/r/%s/hot.json' 
 
 
 def get_subreddit_listing(name):
-    url = 'https://www.reddit.com/r/%s/hot.json' % name
+    url = _subreddit_hot_url % name
     return get_url(url).json()
 
 
@@ -13,14 +17,15 @@ class Reddit(BaseResponder):
 
     def __init__(self, config):
         super(Reddit, self).__init__(config)
-        self.c = MemoryCache(120)
+        self.cache = MemoryCache(300)
 
     def _get_random_post(self, subreddit):
         """Returns a random hot post from a subreddit."""
-        v = self.c.get(subreddit)
+        key = 'hot_%s' % subreddit
+        v = self.cache.get(key)
         if v is None:
             v = get_subreddit_listing(subreddit)
-            self.c.set(subreddit, v)
+            self.cache.set(key, v)
         return random.choice(v['data']['children'])
 
     def command_blazeit(self, msg):
