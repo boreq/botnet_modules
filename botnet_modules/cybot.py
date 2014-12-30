@@ -1,8 +1,6 @@
 import random
 import requests
 from botnet.modules import BaseResponder, parse_command
-from .lib.cache import MemoryCache
-from .lib.helpers import get_url
 
 
 class Cybot(BaseResponder):
@@ -12,7 +10,6 @@ class Cybot(BaseResponder):
 
     def __init__(self, config):
         super(Cybot, self).__init__(config)
-        self.cache = MemoryCache(300)
 
     def command_booty(self, msg):
         self.respond(msg, '( ͡° ͜ʖ ͡°)')
