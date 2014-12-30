@@ -1,15 +1,8 @@
 from botnet.config import Config
-from botnet.message import Message
 from botnet.signals import message_in
 from botnet_modules import tell
+from helpers import make_message
 import pytest
-
-
-def make_message(text, prefix=':nick!~user@1-2-3-4.example.com'):
-    text = '%s PRIVMSG %s' % (prefix, text)
-    msg = Message()
-    msg.from_string(text)
-    return msg
 
 
 class TestMessageStore(object):
@@ -62,10 +55,10 @@ class TestTell(object):
         return Config(config)
 
     @pytest.fixture
-    def tell(self, config):
-        return tell.Tell(config)
+    def mod(self, config):
+        return tell.mod(config)
 
-    def test_tell(self, msg_t, tell):
+    def test_tell(self, msg_t, mod):
         msg = make_message('#channel :.tell recipient something important')
         message_in.send(self, msg=msg)
         assert msg_t.msg.to_string() == 'PRIVMSG #channel :Will do, nick.'
@@ -73,7 +66,7 @@ class TestTell(object):
         message_in.send(self, msg=msg)
         assert msg_t.msg.to_string().endswith('something important')
 
-    def test_tell_twice(self, msg_t, tell):
+    def test_tell_twice(self, msg_t, mod):
         msg = make_message('#channel :.tell recipient something')
         message_in.send(self, msg=msg)
         assert msg_t.msg.to_string() == 'PRIVMSG #channel :Will do, nick.'
