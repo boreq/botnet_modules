@@ -32,6 +32,10 @@ class Cybot(BaseResponder):
         'as a joke in itself.')
         self.respond(msg, text)
 
+    def command_memearrows(self, msg):
+        text = 'Meme arrows are often used to preface implications or feels.'
+        self.respond(msg, text)
+
     def command_triforce(self, msg):
         for text in  ['▲', '▲ ▲']:
             n = random.randint(1, 3)

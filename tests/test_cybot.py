@@ -62,6 +62,12 @@ def test_implying(msg_t, mod):
     assert 'itself' in msg_t.msg.to_string()
 
 
+def test_memearrows(msg_t, mod):
+    msg = make_message('#channel :.memearrows')
+    message_in.send(None, msg=msg)
+    assert 'implications' in msg_t.msg.to_string()
+
+
 def test_int1(msg_t, mod):
     msg = make_message('#channel :.int ayy')
     message_in.send(None, msg=msg)
