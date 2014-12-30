@@ -13,42 +13,48 @@ class MessageStore(list):
         self.logger = get_logger(self)
         self.file_path = file_path
         self.lock = threading.Lock()
-        self.messages = {}
+        self._messages = {}
 
     def load(self):
         """Loads messages from the data file."""
         try:
-            self.messages = load_json(self.file_path)
-        except FileNotFoundError as e:
+            self._messages = load_json(self.file_path)
+        except (FileNotFoundError, ValueError) as e:
             self.logger.warning(str(e))
 
     def save(self):
         """Saves messages to the data file."""
-        save_json(self.file_path, self.messages)
+        save_json(self.file_path, self._messages)
 
     def add(self, recipient, sender, text):
         """Adds a message to an interal list. It is recommened to run self.save
         after doing that.
         """
         if not self.exists(recipient, sender, text):
-            if not recipient in self.messages:
-                self.messages[recipient] = []
+            if not recipient in self._messages:
+                self._messages[recipient] = []
             data = {
                 'sender': sender,
                 'text': text,
                 'time': datetime.datetime.utcnow().isoformat()
             }
-            self.messages[recipient].append(data)
+            self._messages[recipient].append(data)
+            self.save()
             return True
         return False
 
     def exists(self, recipient, sender, text):
         """Checks if an identical message already exists."""
-        if recipient in self.messages:
-            for stored_msg in self.messages[recipient]:
+        if recipient in self._messages:
+            for stored_msg in self._messages[recipient]:
                 if stored_msg['sender'] == sender and stored_msg['text'] == text:
                     return True
         return False
+
+    def get_all(self, recipient):
+        rw =  self._messages.pop(recipient, [])
+        self.save()
+        return rw
 
 
 class Tell(BaseResponder):
@@ -78,8 +84,6 @@ class Tell(BaseResponder):
         text = ' '.join(args.message)
         with self.msg_st.lock:
             added = self.msg_st.add(args.recipient[0], msg.nickname, text)
-            if added:
-                self.msg_st.save()
         if added:
             self.respond(msg, 'Will do, %s.' % msg.nickname)
 
@@ -88,8 +92,7 @@ class Tell(BaseResponder):
         messages.
         """
         with self.msg_st.lock:
-            messages = self.msg_st.messages.pop(msg.nickname, [])
-            self.msg_st.save()
+            messages = self.msg_st.get_all(msg.nickname)
         for m in messages:
             text = '%s: <%s> %s' % (msg.nickname, m['sender'], m['text'])
             self.respond(msg, text)
