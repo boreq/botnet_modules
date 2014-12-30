@@ -5,8 +5,6 @@ from .lib.helpers import get_url
 
 
 _subreddit_hot_url = 'https://www.reddit.com/r/{subreddit}/{type}.json'
-_search_url = 'https://www.reddit.com/search.json?q={query}&sort={sort}&t={time}'
-_search_url_subreddit = 'https://www.reddit.com/{subreddit}/search.json?q={query}&sort={sort}&t={time}'
 
 
 def get_subreddit_listing(subreddit, type='hot'):
@@ -16,22 +14,6 @@ def get_subreddit_listing(subreddit, type='hot'):
     type: one of ['hot', 'new'].
     """
     url = _subreddit_hot_url.format(subreddit=subreddit, type=type)
-    return get_url(url).json()
-
-
-def get_search_listing(query, subreddit=None, sort='hot', time='all'):
-    """Returns a listing containing search results.
-
-    query: search query.
-    subreddit: subreddit name.
-    sort: one of ['relevance', 'new', 'hot', 'top', 'comments'].
-    time: one of ['hour', 'day', 'week', 'month', 'year', 'all'].
-    """
-    if subreddit is None:
-        url = _search_url.format(query=query, sort=sort, time=time)
-    else:
-        url = _search_url_subreddit.format(query=query, subreddit=subreddit,
-                                           sort=sort, time=time)
     return get_url(url).json()
 
 
