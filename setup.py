@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name='botnet_modules',
-    version='0.0.0',
+    version='0.1.0',
     author='boreq',
     author_email='boreq@sourcedrops.com',
     description = ('Additional modules for an IRC bot.'),
@@ -16,7 +16,7 @@ setup(
     packages=['botnet_modules'],
     long_description=read('README.md'),
     install_requires=[
-        'botnet',
+        'botnet>=0.1.0',
         'requests',
     ]
 )
